@@ -390,6 +390,13 @@ DEATH
 
 <h3>⛏ معدن</h3>
 
+<p>
+Level:
+<b id="mineLevel">1</b>
+/
+30
+</p>
+
 <p class="muted">
 استخراج منابع با Cooldown.
 </p>
@@ -399,6 +406,13 @@ class="btn"
 id="mineBtn"
 onclick="mine()">
 استخراج
+</button>
+
+<button
+class="btn"
+id="mineUpgradeBtn"
+onclick="upgradeMine()">
+🔧 ارتقای معدن
 </button>
 
 <div
@@ -424,6 +438,8 @@ id="mineMessage">
 <p>
 Level:
 <b id="powerLevel">1</b>
+/
+30
 </p>
 
 <p class="muted">
@@ -432,6 +448,7 @@ Level:
 
 <button
 class="btn"
+id="powerUpgradeBtn"
 onclick="upgradeBuilding('power')">
 ارتقا
 </button>
@@ -453,6 +470,8 @@ id="powerMessage">
 <p>
 Level:
 <b id="tankLevel">1</b>
+/
+30
 </p>
 
 <p>
@@ -467,6 +486,7 @@ Level:
 
 <button
 class="btn"
+id="tankUpgradeBtn"
 onclick="upgradeEnergyTank()">
 🔋 ارتقای مخزن
 </button>
@@ -489,6 +509,8 @@ id="tankMessage">
 <p>
 Level:
 <b id="labLevel">1</b>
+/
+25
 </p>
 
 <p class="muted">
@@ -497,6 +519,7 @@ Level:
 
 <button
 class="btn"
+id="labUpgradeBtn"
 onclick="upgradeBuilding('lab')">
 ارتقا
 </button>
@@ -518,6 +541,8 @@ id="labMessage">
 <p>
 Level:
 <b id="workshopLevel">1</b>
+/
+25
 </p>
 
 <p class="muted">
@@ -526,6 +551,7 @@ Level:
 
 <button
 class="btn"
+id="workshopUpgradeBtn"
 onclick="upgradeBuilding('workshop')">
 ارتقا
 </button>
@@ -635,11 +661,24 @@ class="rarity">
 <span id="weaponPower"></span>
 </p>
 
+<p>
+Level:
+<b id="weaponLevel">1</b>
+/
+20
+</p>
+
 <button
 class="btn"
+id="weaponUpgradeBtn"
 onclick="upgradeEquipment('weapon')">
 🔧 ارتقای Pickaxe
 </button>
+
+<div
+class="message"
+id="weaponMessage">
+</div>
 
 </div>
 
@@ -662,11 +701,24 @@ class="rarity">
 <span id="armorPower"></span>
 </p>
 
+<p>
+Level:
+<b id="armorLevel">1</b>
+/
+20
+</p>
+
 <button
 class="btn"
+id="armorUpgradeBtn"
 onclick="upgradeEquipment('armor')">
 🔧 ارتقای Armor
 </button>
+
+<div
+class="message"
+id="armorMessage">
+</div>
 
 </div>
 
@@ -850,7 +902,7 @@ id="adminLoginMessage">
 <input type="number" id="aPoint">
 
 <label>Level</label>
-<input type="number" id="aLevel">
+<input type="number" id="aLevel" max="100">
 
 <label>XP</label>
 <input type="number" id="aXp">
@@ -1090,6 +1142,29 @@ id="notice">
 ===================================================== */
 
 
+/* ---------- GAME LIMITS ---------- */
+
+const LIMITS={
+
+playerLevel:100,
+
+mine:30,
+
+power:30,
+
+lab:25,
+
+workshop:25,
+
+tank:30,
+
+weapon:20,
+
+armor:20
+
+};
+
+
 /* ---------- SAFE STORAGE ---------- */
 
 function loadSave(){
@@ -1123,11 +1198,6 @@ JSON.stringify(game)
 );
 
 }catch(error){
-
-/*
-اگر LocalStorage در محیط اجرا محدود باشد،
-بازی همچنان باید کار کند.
-*/
 
 }
 
@@ -1183,17 +1253,31 @@ mineCooldown:120,
 mineReadyAt:0,
 
 weapon:{
+
 name:"Rusty Pickaxe",
+
 rarity:"Common",
+
 power:10,
+
+level:1,
+
 upgrade:0
+
 },
 
 armor:{
+
 name:"Old Jacket",
+
 rarity:"Common",
+
 power:5,
+
+level:1,
+
 upgrade:0
+
 },
 
 specialItems:[],
@@ -1203,9 +1287,13 @@ completedQuests:[],
 achievements:[],
 
 questProgress:{
+
 mine:0,
+
 kill:0,
+
 boss:0
+
 },
 
 eventXP:1,
@@ -1279,11 +1367,123 @@ game.tankLevel=1;
 }
 
 
+/* ---------- OLD SAVE COMPATIBILITY ---------- */
+
+game.level=Math.max(
+1,
+Math.min(
+LIMITS.playerLevel,
+Number(game.level)||1
+)
+);
+
+game.mineLevel=Math.max(
+1,
+Math.min(
+LIMITS.mine,
+Number(game.mineLevel)||1
+)
+);
+
+game.powerLevel=Math.max(
+1,
+Math.min(
+LIMITS.power,
+Number(game.powerLevel)||1
+)
+);
+
+game.labLevel=Math.max(
+1,
+Math.min(
+LIMITS.lab,
+Number(game.labLevel)||1
+)
+);
+
+game.workshopLevel=Math.max(
+1,
+Math.min(
+LIMITS.workshop,
+Number(game.workshopLevel)||1
+)
+);
+
+game.tankLevel=Math.max(
+1,
+Math.min(
+LIMITS.tank,
+Number(game.tankLevel)||1
+)
+);
+
+
+/*
+سیوهای قدیمی تجهیزات upgrade داشتند.
+اگر level نداشتند، از upgrade قبلی
+یک Level امن می‌سازیم.
+*/
+
+if(
+typeof game.weapon.level!=="number" ||
+game.weapon.level<1
+){
+
+game.weapon.level=
+Math.max(
+1,
+Math.min(
+LIMITS.weapon,
+Number(game.weapon.upgrade||0)+1
+)
+);
+
+}
+
+
+if(
+typeof game.armor.level!=="number" ||
+game.armor.level<1
+){
+
+game.armor.level=
+Math.max(
+1,
+Math.min(
+LIMITS.armor,
+Number(game.armor.upgrade||0)+1
+)
+);
+
+}
+
+
+game.weapon.level=
+Math.max(
+1,
+Math.min(
+LIMITS.weapon,
+Math.floor(game.weapon.level)
+)
+);
+
+
+game.armor.level=
+Math.max(
+1,
+Math.min(
+LIMITS.armor,
+Math.floor(game.armor.level)
+)
+);
+
+
 /* ---------- ENERGY TANK ---------- */
 
 function getTankCapacity(level){
 
 const capacities=[
+
 100,
 150,
 225,
@@ -1294,22 +1494,31 @@ const capacities=[
 1050,
 1350,
 1700
+
 ];
+
 
 if(level<1){
 level=1;
 }
 
+
 if(level<=capacities.length){
+
 return capacities[level-1];
+
 }
 
+
 return Math.floor(
+
 capacities[capacities.length-1] *
+
 Math.pow(
 1.25,
 level-capacities.length
 )
+
 );
 
 }
@@ -1400,6 +1609,13 @@ target.classList.add("active");
 
 function xpNeeded(level){
 
+if(level>=LIMITS.playerLevel){
+
+return 1;
+
+}
+
+
 if(level<=5){
 
 return Math.floor(
@@ -1407,6 +1623,7 @@ return Math.floor(
 );
 
 }
+
 
 return Math.floor(
 1100*Math.pow(1.30,level-5)
@@ -1417,16 +1634,41 @@ return Math.floor(
 
 function addXP(amount){
 
+if(game.level>=LIMITS.playerLevel){
+
+game.level=LIMITS.playerLevel;
+
+game.xp=0;
+
+save();
+
+updateUI();
+
+return;
+
+}
+
+
 amount=Number(amount)||0;
 
 amount=Math.floor(
 amount*game.eventXP
 );
 
+if(amount<=0){
+return;
+}
+
+
 game.xp+=amount;
 
+
 while(
+
+game.level<LIMITS.playerLevel &&
+
 game.xp>=xpNeeded(game.level)
+
 ){
 
 game.xp-=xpNeeded(game.level);
@@ -1442,6 +1684,24 @@ notify(
 );
 
 }
+
+
+/*
+Level 100 آخرین Level است.
+*/
+
+if(game.level>=LIMITS.playerLevel){
+
+game.level=LIMITS.playerLevel;
+
+game.xp=0;
+
+notify(
+"🏆 به حداکثر Level بازی رسیدی!"
+);
+
+}
+
 
 save();
 
@@ -1567,7 +1827,10 @@ game[resource.key]+=resource.amount;
 
 
 game.point+=Math.floor(
-resource.point*game.eventPoint
+
+resource.point*
+game.eventPoint
+
 );
 
 
@@ -1595,7 +1858,9 @@ save();
 
 
 mineMessage(
+
 `⛏ ${resource.name} +${resource.amount}`
+
 );
 
 
@@ -1614,6 +1879,69 @@ if(element){
 element.textContent=text;
 
 }
+
+}
+
+
+/* ---------- MINE UPGRADE ---------- */
+
+function mineUpgradeCost(level){
+
+return Math.floor(
+120*Math.pow(1.7,level-1)
+);
+
+}
+
+
+function upgradeMine(){
+
+const currentLevel=
+game.mineLevel;
+
+
+if(currentLevel>=LIMITS.mine){
+
+notify(
+"⛏ معدن به حداکثر Level رسیده."
+);
+
+updateUI();
+
+return;
+
+}
+
+
+const cost=
+mineUpgradeCost(currentLevel);
+
+
+if(game.point<cost){
+
+notify(
+"❌ برای ارتقای معدن "+cost+" Point لازم داری."
+);
+
+return;
+
+}
+
+
+game.point-=cost;
+
+game.mineLevel++;
+
+
+document.getElementById(
+"mineMessage"
+).textContent=
+`⛏ معدن به Level ${game.mineLevel} رسید.`;
+
+
+save();
+
+updateUI();
 
 }
 
@@ -1685,20 +2013,54 @@ function upgradeBuilding(type){
 
 let level=1;
 
+let maxLevel=1;
+
+let messageId="";
+
 
 if(type==="power"){
+
 level=game.powerLevel;
+
+maxLevel=LIMITS.power;
+
+messageId="powerMessage";
+
 }
 
 else if(type==="lab"){
+
 level=game.labLevel;
+
+maxLevel=LIMITS.lab;
+
+messageId="labMessage";
+
 }
 
 else if(type==="workshop"){
+
 level=game.workshopLevel;
+
+maxLevel=LIMITS.workshop;
+
+messageId="workshopMessage";
+
 }
 
 else{
+
+return;
+
+}
+
+
+if(level>=maxLevel){
+
+document.getElementById(
+messageId
+).textContent=
+"🏆 این ساختمان به حداکثر Level رسیده.";
 
 return;
 
@@ -1789,6 +2151,18 @@ function upgradeEnergyTank(){
 
 const currentLevel=
 game.tankLevel;
+
+
+if(currentLevel>=LIMITS.tank){
+
+document.getElementById(
+"tankMessage"
+).textContent=
+"🏆 مخزن به حداکثر Level رسیده.";
+
+return;
+
+}
 
 
 const cost=
@@ -2157,7 +2531,7 @@ const playerDamage=Math.max(
 1,
 
 game.weapon.power+
-game.weapon.upgrade*3-
+game.weapon.level-
 enemy.defense+
 Math.floor(Math.random()*8)
 
@@ -2171,7 +2545,7 @@ const enemyDamage=Math.max(
 enemy.attack-
 (
 game.armor.power+
-game.armor.upgrade*2
+game.armor.level
 )+
 Math.floor(Math.random()*6)
 
@@ -2180,7 +2554,7 @@ Math.floor(Math.random()*6)
 
 /*
 فعلاً سیستم نبرد Chance Based است.
-بعداً می‌توانیم HP واقعی دشمن را اضافه کنیم.
+بعداً HP واقعی دشمن را اضافه می‌کنیم.
 */
 
 if(Math.random()<0.55){
@@ -2317,38 +2691,38 @@ notify(
 const weaponTiers=[
 
 {
+level:1,
 name:"Rusty Pickaxe",
 rarity:"Common",
-power:10,
-cost:0
+power:10
 },
 
 {
+level:5,
 name:"Iron Pickaxe",
 rarity:"Common",
-power:18,
-cost:120
+power:18
 },
 
 {
+level:10,
 name:"Steel Pickaxe",
 rarity:"Rare",
-power:28,
-cost:350
+power:28
 },
 
 {
+level:15,
 name:"Crystal Pickaxe",
 rarity:"Epic",
-power:42,
-cost:900
+power:42
 },
 
 {
+level:20,
 name:"Abyss Pickaxe",
 rarity:"Legendary",
-power:65,
-cost:2500
+power:65
 }
 
 ];
@@ -2357,41 +2731,71 @@ cost:2500
 const armorTiers=[
 
 {
+level:1,
 name:"Old Jacket",
 rarity:"Common",
-power:5,
-cost:0
+power:5
 },
 
 {
+level:5,
 name:"Iron Armor",
 rarity:"Common",
-power:12,
-cost:150
+power:12
 },
 
 {
+level:10,
 name:"Steel Armor",
 rarity:"Rare",
-power:20,
-cost:400
+power:20
 },
 
 {
+level:15,
 name:"Crystal Armor",
 rarity:"Epic",
-power:32,
-cost:1000
+power:32
 },
 
 {
+level:20,
 name:"Abyss Armor",
 rarity:"Legendary",
-power:50,
-cost:3000
+power:50
 }
 
 ];
+
+
+function getEquipmentTier(list,level){
+
+let selected=list[0];
+
+
+list.forEach(function(item){
+
+if(level>=item.level){
+
+selected=item;
+
+}
+
+});
+
+
+return selected;
+
+}
+
+
+function equipmentUpgradeCost(level){
+
+return Math.floor(
+100*Math.pow(1.35,level-1)
+);
+
+}
 
 
 function upgradeEquipment(type){
@@ -2413,36 +2817,31 @@ type==="weapon"
 :game.armor;
 
 
-const list=
+const maxLevel=
 type==="weapon"
-?weaponTiers
-:armorTiers;
+?LIMITS.weapon
+:LIMITS.armor;
 
 
-let index=
-list.findIndex(function(x){
+if(current.level>=maxLevel){
 
-return x.name===current.name;
+notify(
+"🏆 این تجهیزات به حداکثر Level رسیده."
+);
 
-});
+updateUI();
 
-
-if(index<0){
-
-index=0;
+return;
 
 }
 
 
-if(index>=list.length-1){
+const nextLevel=
+current.level+1;
+
 
 const cost=
-Math.floor(
-80*Math.pow(
-1.8,
-current.upgrade+1
-)
-);
+equipmentUpgradeCost(current.level);
 
 
 if(game.point<cost){
@@ -2458,80 +2857,57 @@ return;
 
 game.point-=cost;
 
-current.upgrade++;
+
+current.level=
+nextLevel;
+
+
+/*
+در هر Level قدرت کمی افزایش پیدا می‌کند،
+و در Levelهای اصلی تجهیزات جدید باز می‌شوند.
+*/
+
+const list=
+type==="weapon"
+?weaponTiers
+:armorTiers;
+
+
+const tier=
+getEquipmentTier(
+list,
+current.level
+);
+
+
+current.name=tier.name;
+
+current.rarity=tier.rarity;
+
+current.power=tier.power;
+
+current.upgrade=
+Math.max(
+0,
+current.level-1
+);
+
+
+const messageId=
+type==="weapon"
+?"weaponMessage"
+:"armorMessage";
+
+
+document.getElementById(
+messageId
+).textContent=
+`🔧 ${tier.name} — Level ${current.level} شد.`;
 
 
 save();
 
 updateUI();
-
-notify(
-`🔧 Upgrade +${current.upgrade} انجام شد.`
-);
-
-return;
-
-}
-
-
-const next=
-list[index+1];
-
-
-if(game.point<next.cost){
-
-notify(
-"❌ برای این تجهیزات "+next.cost+" Point لازم است."
-);
-
-return;
-
-}
-
-
-game.point-=next.cost;
-
-
-if(type==="weapon"){
-
-game.weapon={
-
-name:next.name,
-
-rarity:next.rarity,
-
-power:next.power,
-
-upgrade:0
-
-};
-
-}
-
-else{
-
-game.armor={
-
-name:next.name,
-
-rarity:next.rarity,
-
-power:next.power,
-
-upgrade:0
-
-};
-
-}
-
-
-save();
-
-updateUI();
-
-notify(
-"⚔ تجهیزات جدید خریداری شد."
-);
 
 }
 
@@ -2564,8 +2940,18 @@ document.getElementById("weaponPower");
 if(weaponPower){
 
 weaponPower.textContent=
-weapon.power+
-weapon.upgrade*3;
+weapon.power;
+
+}
+
+
+const weaponLevel=
+document.getElementById("weaponLevel");
+
+if(weaponLevel){
+
+weaponLevel.textContent=
+weapon.level;
 
 }
 
@@ -2602,8 +2988,18 @@ document.getElementById("armorPower");
 if(armorPower){
 
 armorPower.textContent=
-armor.power+
-armor.upgrade*2;
+armor.power;
+
+}
+
+
+const armorLevel=
+document.getElementById("armorLevel");
+
+if(armorLevel){
+
+armorLevel.textContent=
+armor.level;
 
 }
 
@@ -2619,6 +3015,42 @@ armor.rarity;
 armorRarity.className=
 "rarity "+
 armor.rarity.toLowerCase();
+
+}
+
+
+const weaponButton=
+document.getElementById(
+"weaponUpgradeBtn"
+);
+
+if(weaponButton){
+
+weaponButton.disabled=
+weapon.level>=LIMITS.weapon;
+
+weaponButton.textContent=
+weapon.level>=LIMITS.weapon
+?"🏆 Pickaxe MAX"
+:"🔧 ارتقای Pickaxe";
+
+}
+
+
+const armorButton=
+document.getElementById(
+"armorUpgradeBtn"
+);
+
+if(armorButton){
+
+armorButton.disabled=
+armor.level>=LIMITS.armor;
+
+armorButton.textContent=
+armor.level>=LIMITS.armor
+?"🏆 Armor MAX"
+:"🔧 ارتقای Armor";
 
 }
 
@@ -3220,10 +3652,15 @@ if(!adminLogged)return;
 
 function number(id){
 
+const element=
+document.getElementById(id);
+
+if(!element){
+return 0;
+}
+
 const value=
-Number(
-document.getElementById(id).value
-);
+Number(element.value);
 
 return Number.isFinite(value)
 ?value
@@ -3236,7 +3673,13 @@ game.point=
 Math.max(0,number("aPoint"));
 
 game.level=
-Math.max(1,number("aLevel"));
+Math.max(
+1,
+Math.min(
+LIMITS.playerLevel,
+Math.floor(number("aLevel"))
+)
+);
 
 game.xp=
 Math.max(0,number("aXp"));
@@ -3272,6 +3715,13 @@ game.water=
 Math.max(0,number("aWater"));
 
 
+if(game.level>=LIMITS.playerLevel){
+
+game.xp=0;
+
+}
+
+
 save();
 
 updateUI();
@@ -3294,10 +3744,15 @@ if(!adminLogged)return;
 
 function number(id){
 
+const element=
+document.getElementById(id);
+
+if(!element){
+return 0;
+}
+
 const value=
-Number(
-document.getElementById(id).value
-);
+Number(element.value);
 
 return Number.isFinite(value)
 ?value
@@ -3632,17 +4087,19 @@ game.medkit
 
 set(
 "attack",
-game.weapon.power+
-game.weapon.upgrade*3
+game.weapon.power
+);
+
+set(
+"defense",
+game.armor.power
 );
 
 
 set(
-"defense",
-game.armor.power+
-game.armor.upgrade*2
+"mineLevel",
+game.mineLevel
 );
-
 
 set(
 "powerLevel",
@@ -3674,6 +4131,98 @@ game.tankLevel
 );
 
 
+/* BUILDING BUTTONS */
+
+const mineUpgradeButton=
+document.getElementById(
+"mineUpgradeBtn"
+);
+
+if(mineUpgradeButton){
+
+mineUpgradeButton.disabled=
+game.mineLevel>=LIMITS.mine;
+
+mineUpgradeButton.textContent=
+game.mineLevel>=LIMITS.mine
+?"🏆 معدن MAX"
+:"🔧 ارتقای معدن";
+
+}
+
+
+const powerUpgradeButton=
+document.getElementById(
+"powerUpgradeBtn"
+);
+
+if(powerUpgradeButton){
+
+powerUpgradeButton.disabled=
+game.powerLevel>=LIMITS.power;
+
+powerUpgradeButton.textContent=
+game.powerLevel>=LIMITS.power
+?"🏆 نیروگاه MAX"
+:"ارتقا";
+
+}
+
+
+const labUpgradeButton=
+document.getElementById(
+"labUpgradeBtn"
+);
+
+if(labUpgradeButton){
+
+labUpgradeButton.disabled=
+game.labLevel>=LIMITS.lab;
+
+labUpgradeButton.textContent=
+game.labLevel>=LIMITS.lab
+?"🏆 آزمایشگاه MAX"
+:"ارتقا";
+
+}
+
+
+const workshopUpgradeButton=
+document.getElementById(
+"workshopUpgradeBtn"
+);
+
+if(workshopUpgradeButton){
+
+workshopUpgradeButton.disabled=
+game.workshopLevel>=LIMITS.workshop;
+
+workshopUpgradeButton.textContent=
+game.workshopLevel>=LIMITS.workshop
+?"🏆 کارگاه MAX"
+:"ارتقا";
+
+}
+
+
+const tankUpgradeButton=
+document.getElementById(
+"tankUpgradeBtn"
+);
+
+if(tankUpgradeButton){
+
+tankUpgradeButton.disabled=
+game.tankLevel>=LIMITS.tank;
+
+tankUpgradeButton.textContent=
+game.tankLevel>=LIMITS.tank
+?"🏆 مخزن MAX"
+:"🔋 ارتقای مخزن";
+
+}
+
+
 /* XP BAR */
 
 const needed=
@@ -3688,11 +4237,19 @@ document.getElementById(
 
 if(xpbar){
 
+if(game.level>=LIMITS.playerLevel){
+
+xpbar.style.width="100%";
+
+}else{
+
 xpbar.style.width=
 Math.min(
 100,
 (game.xp/needed)*100
 )+"%";
+
+}
 
 }
 
