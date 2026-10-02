@@ -3,185 +3,438 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <title>Undermine</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #111;
-      color: white;
-      text-align: center;
+      background: #090909;
+      color: #fff;
     }
 
-    header {
-      padding: 25px;
-      background: #1c1c1c;
-      border-bottom: 2px solid #333;
+    .top {
+      background: #141414;
+      border-bottom: 1px solid #333;
+      padding: 15px;
+      position: sticky;
+      top: 0;
+      z-index: 10;
     }
 
-    h1 {
-      margin: 0;
-      font-size: 36px;
+    .title {
+      font-size: 25px;
+      font-weight: bold;
+      letter-spacing: 2px;
     }
 
-    .game {
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 20px;
+    .subtitle {
+      color: #888;
+      font-size: 13px;
+      margin-top: 5px;
     }
 
     .stats {
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      margin-bottom: 25px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 15px;
     }
 
     .stat {
-      background: #1c1c1c;
+      background: #202020;
       border: 1px solid #333;
       border-radius: 10px;
-      padding: 15px;
+      padding: 10px 5px;
+      text-align: center;
     }
 
-    .number {
+    .stat span {
       display: block;
-      font-size: 24px;
+      font-size: 18px;
       font-weight: bold;
       margin-top: 5px;
     }
 
-    .battle {
-      background: #191919;
+    .city {
+      padding: 20px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .welcome {
+      background: #181818;
+      border: 1px solid #333;
       border-radius: 15px;
-      padding: 30px 20px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+
+    .welcome h2 {
+      margin-top: 0;
+    }
+
+    .mine {
+      min-height: 430px;
+      background:
+        radial-gradient(circle at 20% 20%, #292929 0 4px, transparent 5px),
+        radial-gradient(circle at 80% 30%, #242424 0 5px, transparent 6px),
+        radial-gradient(circle at 40% 70%, #252525 0 6px, transparent 7px),
+        #101010;
+      border: 2px solid #292929;
+      border-radius: 20px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .mine-title {
+      text-align: center;
+      color: #aaa;
+      margin-bottom: 25px;
+    }
+
+    .buildings {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .building {
+      background: #1d1d1d;
+      border: 1px solid #3b3b3b;
+      border-radius: 15px;
+      padding: 25px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .building:hover {
+      transform: translateY(-3px);
+      border-color: #777;
+    }
+
+    .building .icon {
+      font-size: 40px;
+    }
+
+    .building h3 {
+      margin: 10px 0 5px;
+    }
+
+    .building p {
+      color: #888;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    .battle {
+      margin-top: 20px;
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 15px;
+      padding: 20px;
+      text-align: center;
     }
 
     button {
-      padding: 12px 25px;
-      margin: 8px;
       border: none;
-      border-radius: 8px;
-      cursor: pointer;
+      border-radius: 10px;
+      padding: 13px 25px;
       font-size: 16px;
-    }
-
-    #attack {
-      background: #8b0000;
+      cursor: pointer;
+      background: #333;
       color: white;
+      margin-top: 10px;
     }
 
-    #attack:hover {
-      background: #b00000;
+    button:hover {
+      background: #444;
+    }
+
+    #message {
+      color: #aaa;
+      min-height: 20px;
+    }
+
+    @media (max-width: 600px) {
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .buildings {
+        grid-template-columns: 1fr 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <h1>UNDЕRMINE</h1>
-    <p>مبارزه کن، امتیاز بگیر و به رتبه‌های بالاتر برس ⚔️</p>
+  <header class="top">
+
+    <div class="title">⛏️ UNDERMINE</div>
+
+    <div class="subtitle">
+      شهر تو در اعماق زمین ساخته می‌شود
+    </div>
+
+    <div class="stats">
+
+      <div class="stat">
+        🪙 Point
+        <span id="points">0</span>
+      </div>
+
+      <div class="stat">
+        ⭐ Level
+        <span id="level">1</span>
+      </div>
+
+      <div class="stat">
+        ☠️ Kill
+        <span id="kills">0</span>
+      </div>
+
+      <div class="stat">
+        💀 Death
+        <span id="deaths">0</span>
+      </div>
+
+    </div>
+
   </header>
 
-  <main class="game">
 
-    <section class="stats">
+  <main class="city">
 
-      <div class="stat">
-        🪙 پوینت
-        <span class="number" id="points">0</span>
+    <section class="welcome">
+
+      <h2>
+        خوش آمدی، <span id="playerName">بازیکن</span> 👋
+      </h2>
+
+      <p>
+        به اعماق Undermine خوش آمدی.
+        اینجا شهری است که خودت باید آن را بسازی.
+      </p>
+
+    </section>
+
+
+    <section class="mine">
+
+      <div class="mine-title">
+        🏙️ قلب شهر زیرزمینی
       </div>
 
-      <div class="stat">
-        ⭐ لول
-        <span class="number" id="level">1</span>
-      </div>
 
-      <div class="stat">
-        ☠️ کشتار
-        <span class="number" id="kills">0</span>
-      </div>
+      <div class="buildings">
 
-      <div class="stat">
-        💀 مرگ
-        <span class="number" id="deaths">0</span>
+        <div class="building" onclick="mineResource()">
+
+          <div class="icon">⛏️</div>
+
+          <h3>معدن</h3>
+
+          <p>
+            استخراج منابع
+          </p>
+
+        </div>
+
+
+        <div class="building" onclick="showMessage('ساختمان انرژی در حال آماده‌سازی است ⚡')">
+
+          <div class="icon">⚡</div>
+
+          <h3>نیروگاه</h3>
+
+          <p>
+            تولید انرژی
+          </p>
+
+        </div>
+
+
+        <div class="building" onclick="showMessage('آزمایشگاه هنوز ساخته نشده 🔬')">
+
+          <div class="icon">🔬</div>
+
+          <h3>آزمایشگاه</h3>
+
+          <p>
+            تحقیقات
+          </p>
+
+        </div>
+
+
+        <div class="building" onclick="showMessage('بازار به‌زودی فعال می‌شود 🏪')">
+
+          <div class="icon">🏪</div>
+
+          <h3>بازار</h3>
+
+          <p>
+            خرید و فروش
+          </p>
+
+        </div>
+
       </div>
 
     </section>
 
+
     <section class="battle">
-      <h2>⚔️ میدان مبارزه</h2>
 
-      <p id="message">آماده‌ای؟</p>
+      <h2>⚔️ منطقه خطرناک</h2>
 
-      <button id="attack" onclick="attack()">حمله ⚔️</button>
+      <p id="message">
+        موجودات ناشناخته در اعماق زمین زندگی می‌کنند...
+      </p>
+
+      <button onclick="attack()">
+        ورود به مبارزه ⚔️
+      </button>
 
     </section>
 
   </main>
 
+
   <script>
 
     let playerName = localStorage.getItem("playerName") || "";
-let points = Number(localStorage.getItem("points")) || 0;
-let level = Number(localStorage.getItem("level")) || 1;
-let kills = Number(localStorage.getItem("kills")) || 0;
-let deaths = Number(localStorage.getItem("deaths")) || 0;
 
-function updateScreen() {
-  document.getElementById("points").textContent = points;
-  document.getElementById("level").textContent = level;
-  document.getElementById("kills").textContent = kills;
-  document.getElementById("deaths").textContent = deaths;
-}
+    let points =
+      Number(localStorage.getItem("points")) || 0;
 
-function saveGame() {
-  localStorage.setItem("playerName", playerName);
-  localStorage.setItem("points", points);
-  localStorage.setItem("level", level);
-  localStorage.setItem("kills", kills);
-  localStorage.setItem("deaths", deaths);
-}
+    let level =
+      Number(localStorage.getItem("level")) || 1;
 
-function attack() {
-  const win = Math.random() < 0.6;
+    let kills =
+      Number(localStorage.getItem("kills")) || 0;
 
-  if (win) {
-    kills++;
-    points += 10;
+    let deaths =
+      Number(localStorage.getItem("deaths")) || 0;
 
-    document.getElementById("message").textContent =
-      "⚔️ دشمن را شکست دادی! +10 پوینت";
 
-    if (points >= level * 100) {
-      level++;
-      document.getElementById("message").textContent +=
-        " 🎉 لول آپ شدی!";
+    function saveGame() {
+
+      localStorage.setItem("playerName", playerName);
+
+      localStorage.setItem("points", points);
+
+      localStorage.setItem("level", level);
+
+      localStorage.setItem("kills", kills);
+
+      localStorage.setItem("deaths", deaths);
+
     }
-  } else {
-    deaths++;
 
-    document.getElementById("message").textContent =
-      "💀 شکست خوردی!";
-  }
 
-  saveGame();
-  updateScreen();
-}
+    function updateScreen() {
 
-if (!playerName) {
-  playerName = prompt("نام بازیکنت رو وارد کن:");
+      document.getElementById("points").textContent = points;
 
-  if (!playerName) {
-    playerName = "بازیکن";
-  }
+      document.getElementById("level").textContent = level;
 
-  saveGame();
-}
+      document.getElementById("kills").textContent = kills;
 
-updateScreen();
+      document.getElementById("deaths").textContent = deaths;
+
+      document.getElementById("playerName").textContent =
+        playerName;
+
+    }
+
+
+    function attack() {
+
+      const win = Math.random() < 0.6;
+
+      if (win) {
+
+        kills++;
+
+        points += 10;
+
+        document.getElementById("message").textContent =
+          "⚔️ موجود زیرزمینی را شکست دادی! +10 Point";
+
+        if (points >= level * 100) {
+
+          level++;
+
+          document.getElementById("message").textContent +=
+            " 🎉 Level Up!";
+
+        }
+
+      } else {
+
+        deaths++;
+
+        document.getElementById("message").textContent =
+          "💀 موجود زیرزمینی تو را شکست داد!";
+
+      }
+
+      saveGame();
+
+      updateScreen();
+
+    }
+
+
+    function mineResource() {
+
+      points += 5;
+
+      document.getElementById("message").textContent =
+        "⛏️ منابع استخراج کردی! +5 Point";
+
+      saveGame();
+
+      updateScreen();
+
+    }
+
+
+    function showMessage(message) {
+
+      document.getElementById("message").textContent =
+        message;
+
+    }
+
+
+    if (!playerName) {
+
+      playerName =
+        prompt("نام بازیکنت را وارد کن:");
+
+      if (!playerName) {
+
+        playerName = "بازیکن";
+
+      }
+
+      saveGame();
+
+    }
+
+
+    updateScreen();
 
   </script>
 
