@@ -124,49 +124,64 @@
 
   <script>
 
-    let points = 0;
-    let level = 1;
-    let kills = 0;
-    let deaths = 0;
+    let playerName = localStorage.getItem("playerName") || "";
+let points = Number(localStorage.getItem("points")) || 0;
+let level = Number(localStorage.getItem("level")) || 1;
+let kills = Number(localStorage.getItem("kills")) || 0;
+let deaths = Number(localStorage.getItem("deaths")) || 0;
 
-    function updateScreen() {
-      document.getElementById("points").textContent = points;
-      document.getElementById("level").textContent = level;
-      document.getElementById("kills").textContent = kills;
-      document.getElementById("deaths").textContent = deaths;
+function updateScreen() {
+  document.getElementById("points").textContent = points;
+  document.getElementById("level").textContent = level;
+  document.getElementById("kills").textContent = kills;
+  document.getElementById("deaths").textContent = deaths;
+}
+
+function saveGame() {
+  localStorage.setItem("playerName", playerName);
+  localStorage.setItem("points", points);
+  localStorage.setItem("level", level);
+  localStorage.setItem("kills", kills);
+  localStorage.setItem("deaths", deaths);
+}
+
+function attack() {
+  const win = Math.random() < 0.6;
+
+  if (win) {
+    kills++;
+    points += 10;
+
+    document.getElementById("message").textContent =
+      "⚔️ دشمن را شکست دادی! +10 پوینت";
+
+    if (points >= level * 100) {
+      level++;
+      document.getElementById("message").textContent +=
+        " 🎉 لول آپ شدی!";
     }
+  } else {
+    deaths++;
 
-    function attack() {
+    document.getElementById("message").textContent =
+      "💀 شکست خوردی!";
+  }
 
-      const win = Math.random() < 0.6;
+  saveGame();
+  updateScreen();
+}
 
-      if (win) {
+if (!playerName) {
+  playerName = prompt("نام بازیکنت رو وارد کن:");
 
-        kills++;
-        points += 10;
+  if (!playerName) {
+    playerName = "بازیکن";
+  }
 
-        document.getElementById("message").textContent =
-          "⚔️ دشمن را شکست دادی! +10 پوینت";
+  saveGame();
+}
 
-        if (points >= level * 100) {
-          level++;
-          document.getElementById("message").textContent +=
-            " 🎉 لول آپ شدی!";
-        }
-
-      } else {
-
-        deaths++;
-
-        document.getElementById("message").textContent =
-          "💀 شکست خوردی!";
-
-      }
-
-      updateScreen();
-    }
-
-    updateScreen();
+updateScreen();
 
   </script>
 
