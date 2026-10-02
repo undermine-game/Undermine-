@@ -1,14 +1,174 @@
 <!DOCTYPE html>
-<html lang="fa">
+<html lang="fa" dir="rtl">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Undermine</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #111;
+      color: white;
+      text-align: center;
+    }
+
+    header {
+      padding: 25px;
+      background: #1c1c1c;
+      border-bottom: 2px solid #333;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 36px;
+    }
+
+    .game {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 20px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 25px;
+    }
+
+    .stat {
+      background: #1c1c1c;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 15px;
+    }
+
+    .number {
+      display: block;
+      font-size: 24px;
+      font-weight: bold;
+      margin-top: 5px;
+    }
+
+    .battle {
+      background: #191919;
+      border-radius: 15px;
+      padding: 30px 20px;
+    }
+
+    button {
+      padding: 12px 25px;
+      margin: 8px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #attack {
+      background: #8b0000;
+      color: white;
+    }
+
+    #attack:hover {
+      background: #b00000;
+    }
+  </style>
 </head>
+
 <body>
 
-  <h1>UNDЕRMINE</h1>
-  <p>بازی ما در حال ساخته شدنه 🎮</p>
+  <header>
+    <h1>UNDЕRMINE</h1>
+    <p>مبارزه کن، امتیاز بگیر و به رتبه‌های بالاتر برس ⚔️</p>
+  </header>
+
+  <main class="game">
+
+    <section class="stats">
+
+      <div class="stat">
+        🪙 پوینت
+        <span class="number" id="points">0</span>
+      </div>
+
+      <div class="stat">
+        ⭐ لول
+        <span class="number" id="level">1</span>
+      </div>
+
+      <div class="stat">
+        ☠️ کشتار
+        <span class="number" id="kills">0</span>
+      </div>
+
+      <div class="stat">
+        💀 مرگ
+        <span class="number" id="deaths">0</span>
+      </div>
+
+    </section>
+
+    <section class="battle">
+      <h2>⚔️ میدان مبارزه</h2>
+
+      <p id="message">آماده‌ای؟</p>
+
+      <button id="attack" onclick="attack()">حمله ⚔️</button>
+
+    </section>
+
+  </main>
+
+  <script>
+
+    let points = 0;
+    let level = 1;
+    let kills = 0;
+    let deaths = 0;
+
+    function updateScreen() {
+      document.getElementById("points").textContent = points;
+      document.getElementById("level").textContent = level;
+      document.getElementById("kills").textContent = kills;
+      document.getElementById("deaths").textContent = deaths;
+    }
+
+    function attack() {
+
+      const win = Math.random() < 0.6;
+
+      if (win) {
+
+        kills++;
+        points += 10;
+
+        document.getElementById("message").textContent =
+          "⚔️ دشمن را شکست دادی! +10 پوینت";
+
+        if (points >= level * 100) {
+          level++;
+          document.getElementById("message").textContent +=
+            " 🎉 لول آپ شدی!";
+        }
+
+      } else {
+
+        deaths++;
+
+        document.getElementById("message").textContent =
+          "💀 شکست خوردی!";
+
+      }
+
+      updateScreen();
+    }
+
+    updateScreen();
+
+  </script>
 
 </body>
 </html>
