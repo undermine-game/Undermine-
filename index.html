@@ -1,614 +1,2378 @@
 <!DOCTYPE html>
 <html lang="fa" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Undermine</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>UNDERMINE</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+    background:#080b10;
+    color:#eee;
+    min-height:100vh;
+}
+
+button{
+    border:0;
+    cursor:pointer;
+    color:white;
+}
+
+.app{
+    max-width:900px;
+    margin:auto;
+    min-height:100vh;
+    background:#0d1219;
+}
+
+header{
+    background:#111923;
+    padding:15px;
+    border-bottom:1px solid #263241;
+    position:sticky;
+    top:0;
+    z-index:20;
+}
+
+.logo{
+    font-size:26px;
+    font-weight:bold;
+    letter-spacing:3px;
+    text-align:center;
+    color:#d7b35a;
+    margin-bottom:12px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
+}
+
+.stat{
+    background:#18212c;
+    padding:8px 4px;
+    border-radius:8px;
+    text-align:center;
+    font-size:11px;
+}
+
+.stat b{
+    display:block;
+    color:#d7b35a;
+    font-size:15px;
+    margin-top:3px;
+}
+
+.xpbox{
+    margin-top:9px;
+    background:#1a222c;
+    height:8px;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.xpbar{
+    height:100%;
+    width:0%;
+    background:#b78b36;
+    transition:.3s;
+}
+
+.energy{
+    margin-top:8px;
+    font-size:12px;
+    color:#9ca8b5;
+    text-align:center;
+}
+
+nav{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:6px;
+    padding:10px;
+    background:#0a0f15;
+    position:sticky;
+    top:124px;
+    z-index:19;
+}
+
+nav button{
+    background:#17212c;
+    padding:10px 4px;
+    border-radius:8px;
+    font-size:11px;
+}
+
+nav button:hover{
+    background:#263545;
+}
+
+main{
+    padding:12px;
+}
+
+section{
+    display:none;
+}
+
+section.active{
+    display:block;
+}
+
+h2{
+    color:#d7b35a;
+    margin-bottom:12px;
+    font-size:20px;
+}
+
+h3{
+    margin-bottom:8px;
+}
+
+.card{
+    background:#141c25;
+    border:1px solid #273442;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:10px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.btn{
+    background:#74551f;
+    padding:11px;
+    border-radius:8px;
+    margin-top:8px;
+    width:100%;
+}
+
+.btn:hover{
+    background:#916d2b;
+}
+
+.btn:disabled{
+    background:#303842;
+    color:#777;
+    cursor:not-allowed;
+}
+
+.green{
+    color:#65c878;
+}
+
+.red{
+    color:#e66b6b;
+}
+
+.blue{
+    color:#63a8df;
+}
+
+.yellow{
+    color:#d7b35a;
+}
+
+.muted{
+    color:#8995a1;
+    font-size:12px;
+}
+
+.big{
+    font-size:22px;
+    font-weight:bold;
+}
+
+.resource{
+    display:flex;
+    justify-content:space-between;
+    padding:7px 0;
+    border-bottom:1px solid #222c36;
+}
+
+.enemy{
+    border:1px solid #4a3030;
+    background:#1b1518;
+}
+
+.zone{
+    position:relative;
+}
+
+.lock{
+    opacity:.55;
+}
+
+.tag{
+    display:inline-block;
+    padding:4px 7px;
+    border-radius:6px;
+    background:#26313c;
+    font-size:10px;
+    margin-bottom:7px;
+}
+
+input,select{
+    width:100%;
+    padding:11px;
+    border-radius:8px;
+    border:1px solid #344352;
+    background:#0d131a;
+    color:white;
+    margin-top:6px;
+    outline:none;
+}
+
+label{
+    display:block;
+    margin-top:9px;
+    font-size:12px;
+    color:#aeb8c3;
+}
+
+.admin{
+    border-color:#704040;
+}
+
+.adminTitle{
+    color:#e36d6d;
+}
+
+.message{
+    margin-top:10px;
+    padding:10px;
+    background:#18222c;
+    border-radius:8px;
+    font-size:12px;
+    text-align:center;
+    color:#c2ccd5;
+}
+
+.cooldown{
+    font-size:18px;
+    color:#d7b35a;
+    margin-top:8px;
+}
+
+.hpbar{
+    height:10px;
+    background:#2a1c20;
+    border-radius:10px;
+    overflow:hidden;
+    margin:8px 0;
+}
+
+.hpfill{
+    height:100%;
+    background:#a54848;
+}
+
+.listItem{
+    padding:10px;
+    border-bottom:1px solid #26313b;
+}
+
+footer{
+    text-align:center;
+    color:#586572;
+    padding:25px 10px;
+    font-size:10px;
+}
+
+@media(max-width:500px){
+    .stats{
+        grid-template-columns:repeat(4,1fr);
     }
 
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #090909;
-      color: #fff;
+    nav{
+        top:124px;
     }
 
-    .top {
-      background: #141414;
-      border-bottom: 1px solid #333;
-      padding: 15px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
+    .grid{
+        grid-template-columns:1fr;
     }
-
-    .title {
-      font-size: 25px;
-      font-weight: bold;
-      letter-spacing: 2px;
-    }
-
-    .subtitle {
-      color: #888;
-      font-size: 13px;
-      margin-top: 5px;
-    }
-
-    .stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 15px;
-    }
-
-    .stat {
-      background: #202020;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 10px 5px;
-      text-align: center;
-    }
-
-    .stat span {
-      display: block;
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 5px;
-    }
-
-    .level-bar {
-      margin-top: 10px;
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 10px;
-    }
-
-    .level-info {
-      display: flex;
-      justify-content: space-between;
-      color: #aaa;
-      font-size: 13px;
-      margin-bottom: 7px;
-    }
-
-    .progress {
-      width: 100%;
-      height: 10px;
-      background: #292929;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    #levelProgress {
-      height: 100%;
-      width: 0%;
-      background: #fff;
-      transition: width 0.3s;
-    }
-
-    .resources {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .resource {
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 10px;
-      padding: 10px 5px;
-      text-align: center;
-      font-size: 13px;
-    }
-
-    .resource span {
-      display: block;
-      font-size: 18px;
-      font-weight: bold;
-      margin-top: 4px;
-    }
-
-    .city {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .welcome {
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 15px;
-      padding: 20px;
-      margin-bottom: 20px;
-    }
-
-    .welcome h2 {
-      margin-top: 0;
-    }
-
-    .mine {
-      background: #101010;
-      border: 2px solid #292929;
-      border-radius: 20px;
-      padding: 20px;
-    }
-
-    .mine-title {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 25px;
-    }
-
-    .buildings {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 15px;
-    }
-
-    .building {
-      background: #1d1d1d;
-      border: 1px solid #3b3b3b;
-      border-radius: 15px;
-      padding: 25px 10px;
-      text-align: center;
-      cursor: pointer;
-      transition: 0.2s;
-    }
-
-    .building:hover {
-      transform: translateY(-3px);
-      border-color: #777;
-    }
-
-    .building .icon {
-      font-size: 40px;
-    }
-
-    .building h3 {
-      margin: 10px 0 5px;
-    }
-
-    .building p {
-      color: #888;
-      font-size: 13px;
-      margin: 0;
-    }
-
-    .battle {
-      margin-top: 20px;
-      background: #181818;
-      border: 1px solid #333;
-      border-radius: 15px;
-      padding: 20px;
-      text-align: center;
-    }
-
-    button {
-      border: none;
-      border-radius: 10px;
-      padding: 13px 25px;
-      font-size: 16px;
-      cursor: pointer;
-      background: #333;
-      color: white;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: #444;
-    }
-
-    #message {
-      color: #aaa;
-      min-height: 20px;
-    }
-
-    @media (max-width: 600px) {
-      .stats,
-      .resources {
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      .buildings {
-        grid-template-columns: 1fr 1fr;
-      }
-    }
-  </style>
+}
+</style>
 </head>
 
 <body>
 
-  <header class="top">
+<div class="app">
 
-    <div class="title">⛏️ UNDERMINE</div>
-
-    <div class="subtitle">
-      شهر تو در اعماق زمین ساخته می‌شود
-    </div>
+<header>
+    <div class="logo">⛏ UNDERMINE</div>
 
     <div class="stats">
-
-      <div class="stat">
-        🪙 Point
-        <span id="points">0</span>
-      </div>
-
-      <div class="stat">
-        ⭐ Level
-        <span id="level">1</span>
-      </div>
-
-      <div class="stat">
-        ☠️ Kill
-        <span id="kills">0</span>
-      </div>
-
-      <div class="stat">
-        💀 Death
-        <span id="deaths">0</span>
-      </div>
-
+        <div class="stat">POINT<b id="point">0</b></div>
+        <div class="stat">LEVEL<b id="level">1</b></div>
+        <div class="stat">KILL<b id="kill">0</b></div>
+        <div class="stat">DEATH<b id="death">0</b></div>
     </div>
 
-    <div class="level-bar">
-
-      <div class="level-info">
-        <span>⭐ پیشرفت Level</span>
-        <span id="levelText">0 / 100</span>
-      </div>
-
-      <div class="progress">
-        <div id="levelProgress"></div>
-      </div>
-
+    <div class="xpbox">
+        <div class="xpbar" id="xpbar"></div>
     </div>
 
-    <div class="resources">
-
-      <div class="resource">
-        🪨 سنگ
-        <span id="stone">0</span>
-      </div>
-
-      <div class="resource">
-        ⛓️ فلز
-        <span id="metal">0</span>
-      </div>
-
-      <div class="resource">
-        💎 کریستال
-        <span id="crystal">0</span>
-      </div>
-
-      <div class="resource">
-        💧 آب
-        <span id="water">0</span>
-      </div>
-
+    <div class="energy">
+        ⚡ Energy: <span id="energy">100</span>/100
     </div>
+</header>
 
-  </header>
+<nav>
+    <button onclick="showSection('city')">🏚 شهر</button>
+    <button onclick="showSection('map')">🗺 نقشه</button>
+    <button onclick="showSection('battle')">⚔ نبرد</button>
+    <button onclick="showSection('inventory')">🎒 کیف</button>
+    <button onclick="showSection('market')">🏪 بازار</button>
+    <button onclick="showSection('quests')">📜 مأموریت</button>
+    <button onclick="showSection('achievements')">🏆 دستاورد</button>
+    <button onclick="showSection('adminLogin')">🔐 Admin</button>
+</nav>
 
-  <main class="city">
+<main>
 
-    <section class="welcome">
+<!-- CITY -->
 
-      <h2>
-        خوش آمدی، <span id="playerName">بازیکن</span> 👋
-      </h2>
+<section id="city" class="active">
 
-      <p>
-        شهر زیرزمینی خودت را بساز، منابع جمع کن و به اعماق زمین برو.
-      </p>
+<h2>🏚 شهر زیرزمینی</h2>
 
-    </section>
+<div class="card">
+    <h3>خوش آمدی، <span id="playerName">Miner</span></h3>
+    <p class="muted">
+        اینجا فقط عمیق‌تر شدن کافی نیست؛ باید منابع، تجهیزات و شهر خودت را مدیریت کنی.
+    </p>
+</div>
 
-    <section class="mine">
+<div class="grid">
 
-      <div class="mine-title">
-        🏙️ قلب شهر زیرزمینی
-      </div>
+<div class="card">
+    <h3>⛏ معدن</h3>
+    <p class="muted">استخراج منابع از اعماق زمین.</p>
 
-      <div class="buildings">
+    <button class="btn" id="mineBtn" onclick="mine()">
+        استخراج
+    </button>
 
-        <div class="building" onclick="mineResource()">
+    <div class="cooldown" id="mineTimer"></div>
+    <div class="message" id="mineMessage">آماده استخراج</div>
+</div>
 
-          <div class="icon">⛏️</div>
+<div class="card">
+    <h3>⚡ نیروگاه</h3>
+    <p>Level: <span id="powerLevel">1</span></p>
+    <p class="muted">افزایش ظرفیت Energy</p>
 
-          <h3>معدن</h3>
+    <button class="btn" onclick="upgradeBuilding('power')">
+        ارتقا
+    </button>
 
-          <p>
-            استخراج منابع
-          </p>
+    <div class="message" id="powerMessage"></div>
+</div>
+
+<div class="card">
+    <h3>🔬 آزمایشگاه</h3>
+    <p>Level: <span id="labLevel">1</span></p>
+    <p class="muted">افزایش Defense</p>
+
+    <button class="btn" onclick="upgradeBuilding('lab')">
+        ارتقا
+    </button>
+
+    <div class="message" id="labMessage"></div>
+</div>
+
+<div class="card">
+    <h3>🏪 بازار</h3>
+    <p class="muted">خرید و فروش منابع و آیتم‌ها.</p>
+    <button class="btn" onclick="showSection('market')">
+        ورود به بازار
+    </button>
+</div>
+
+</div>
+
+</section>
+
+<!-- MAP -->
+
+<section id="map">
+
+<h2>🗺 مناطق زیرزمینی</h2>
+
+<div id="zones"></div>
+
+</section>
+
+<!-- BATTLE -->
+
+<section id="battle">
+
+<h2>⚔ نبرد</h2>
+
+<div class="card">
+
+<h3>وضعیت بازیکن</h3>
+
+<p>❤️ HP: <span id="playerHp"></span></p>
+
+<div class="hpbar">
+    <div class="hpfill" id="playerHpBar"></div>
+</div>
+
+<p>⚔ Attack: <span id="attack"></span></p>
+<p>🛡 Defense: <span id="defense"></span></p>
+
+</div>
+
+<div id="enemies"></div>
+
+<div class="message" id="battleMessage">
+    یک دشمن انتخاب کن.
+</div>
+
+</section>
+
+<!-- INVENTORY -->
+
+<section id="inventory">
+
+<h2>🎒 Inventory</h2>
+
+<div class="card">
+
+<h3>منابع</h3>
+
+<div class="resource">
+    <span>🪨 Stone</span>
+    <b id="stone"></b>
+</div>
+
+<div class="resource">
+    <span>🔩 Metal</span>
+    <b id="metal"></b>
+</div>
+
+<div class="resource">
+    <span>💎 Crystal</span>
+    <b id="crystal"></b>
+</div>
+
+<div class="resource">
+    <span>💧 Water</span>
+    <b id="water"></b>
+</div>
+
+</div>
+
+<div class="card">
+
+<h3>تجهیزات</h3>
+
+<div class="resource">
+    <span>⚔ Weapon</span>
+    <b id="weapon"></b>
+</div>
+
+<div class="resource">
+    <span>🛡 Armor</span>
+    <b id="armor"></b>
+</div>
+
+<div class="resource">
+    <span>💊 Medkit</span>
+    <b id="medkit"></b>
+</div>
+
+</div>
+
+</section>
+
+<!-- MARKET -->
+
+<section id="market">
+
+<h2>🏪 بازار</h2>
+
+<div class="card">
+
+<p class="muted">
+خرید با Point انجام می‌شود.
+</p>
+
+<button class="btn" onclick="buy('stone')">
+خرید 10 Stone — 20 Point
+</button>
+
+<button class="btn" onclick="buy('metal')">
+خرید 5 Metal — 30 Point
+</button>
+
+<button class="btn" onclick="buy('crystal')">
+خرید 1 Crystal — 50 Point
+</button>
+
+<button class="btn" onclick="buy('water')">
+خرید 5 Water — 15 Point
+</button>
+
+<button class="btn" onclick="buy('medkit')">
+خرید Medkit — 40 Point
+</button>
+
+<div class="message" id="marketMessage"></div>
+
+</div>
+
+</section>
+
+<!-- QUESTS -->
+
+<section id="quests">
+
+<h2>📜 مأموریت‌ها</h2>
+
+<div id="questList"></div>
+
+</section>
+
+<!-- ACHIEVEMENTS -->
+
+<section id="achievements">
+
+<h2>🏆 دستاوردها</h2>
+
+<div id="achievementList"></div>
+
+</section>
+
+<!-- ADMIN LOGIN -->
+
+<section id="adminLogin">
+
+<h2>🔐 ورود مدیریت</h2>
+
+<div class="card admin">
+
+<p class="muted">
+پنل مدیریت نسخه آزمایشی است.
+</p>
+
+<label>رمز مدیریت</label>
+<input type="password" id="adminPassword">
+
+<button class="btn" onclick="adminLogin()">
+ورود
+</button>
+
+<div class="message" id="adminLoginMessage"></div>
+
+</div>
+
+</section>
+
+<!-- ADMIN PANEL -->
+
+<section id="adminPanel">
+
+<h2 class="adminTitle">🔴 ADMIN PANEL</h2>
+
+<div class="card admin">
+
+<h3>👤 اطلاعات بازیکن</h3>
+
+<label>Point</label>
+<input type="number" id="aPoint">
+
+<label>Level</label>
+<input type="number" id="aLevel">
+
+<label>XP</label>
+<input type="number" id="aXp">
+
+<label>Kill</label>
+<input type="number" id="aKill">
+
+<label>Death</label>
+<input type="number" id="aDeath">
+
+<label>HP</label>
+<input type="number" id="aHp">
+
+<label>Energy</label>
+<input type="number" id="aEnergy">
+
+<button class="btn" onclick="adminSaveStats()">
+ذخیره تغییرات
+</button>
+
+<div class="message" id="adminStatsMessage"></div>
+
+</div>
+
+<div class="card admin">
+
+<h3>🎁 جایزه ویژه</h3>
+
+<label>Point</label>
+<input type="number" id="rewardPoint" value="0">
+
+<label>XP</label>
+<input type="number" id="rewardXp" value="0">
+
+<label>Stone</label>
+<input type="number" id="rewardStone" value="0">
+
+<label>Metal</label>
+<input type="number" id="rewardMetal" value="0">
+
+<label>Crystal</label>
+<input type="number" id="rewardCrystal" value="0">
+
+<label>Water</label>
+<input type="number" id="rewardWater" value="0">
+
+<label>Medkit</label>
+<input type="number" id="rewardMedkit" value="0">
+
+<label>نام آیتم ویژه</label>
+<input type="text" id="specialItem" placeholder="مثلاً Shadow Pickaxe">
+
+<button class="btn" onclick="giveSpecialReward()">
+🎁 اعطای جایزه
+</button>
+
+<div class="message" id="rewardMessage"></div>
+
+</div>
+
+<div class="card admin">
+
+<h3>🎉 Event</h3>
+
+<label>ضریب XP</label>
+<input type="number" id="eventXp" value="1" step="0.1">
+
+<label>ضریب Point</label>
+<input type="number" id="eventPoint" value="1" step="0.1">
+
+<button class="btn" onclick="activateEvent()">
+فعال کردن Event
+</button>
+
+<button class="btn" onclick="disableEvent()">
+خاموش کردن Event
+</button>
+
+<div class="message" id="eventMessage"></div>
+
+</div>
+
+<div class="card admin">
+
+<h3>⛏ کنترل معدن</h3>
+
+<label>زمان استخراج بر حسب ثانیه</label>
+<input type="number" id="mineCooldownAdmin" value="120">
+
+<button class="btn" onclick="changeMineCooldown()">
+تغییر زمان Mine
+</button>
+
+<div class="message" id="mineAdminMessage"></div>
+
+</div>
+
+<div class="card admin">
+
+<h3>📢 پیام ادمین</h3>
+
+<input type="text" id="adminAnnouncement"
+placeholder="پیام برای بازیکنان">
+
+<button class="btn" onclick="sendAnnouncement()">
+ارسال پیام
+</button>
+
+<div class="message" id="announcementMessage"></div>
+
+</div>
+
+<div class="card admin">
+
+<h3>⚙ مدیریت بازی</h3>
+
+<button class="btn" onclick="adminFullHeal()">
+❤️ پر کردن HP
+</button>
+
+<button class="btn" onclick="adminFullEnergy()">
+⚡ پر کردن Energy
+</button>
+
+<button class="btn" onclick="resetGame()">
+⚠ ریست کامل بازی
+</button>
+
+</div>
+
+</section>
+
+</main>
+
+<footer>
+UNDERMINE — Underground Survival
+</footer>
+
+</div>
+
+<script>
+
+/* =========================
+   GAME DATA
+========================= */
+
+const defaultGame = {
+
+    playerName:"Miner",
+
+    point:100,
+    level:1,
+    xp:0,
+
+    kill:0,
+    death:0,
+
+    hp:100,
+    maxHp:100,
+
+    energy:100,
+    maxEnergy:100,
+
+    stone:0,
+    metal:0,
+    crystal:0,
+    water:0,
+
+    medkit:1,
+
+    weapon:"Rusty Pickaxe",
+    armor:"Old Jacket",
+
+    attack:10,
+    defense:5,
+
+    mineLevel:1,
+    powerLevel:1,
+    labLevel:1,
+
+    unlockedZones:[1],
+
+    completedQuests:[],
+    achievements:[],
+
+    specialItems:[],
+
+    mineReadyAt:0,
+
+    mineCooldown:120,
+
+    eventXp:1,
+    eventPoint:1,
+
+    announcement:""
+
+};
+
+let game = JSON.parse(
+    localStorage.getItem("undermineGame")
+) || defaultGame;
+
+let adminLogged = false;
+
+
+/* =========================
+   XP SYSTEM
+========================= */
+
+function xpNeeded(level){
+
+    if(level < 5){
+        return Math.floor(100 * Math.pow(1.45,level-1));
+    }
+
+    return Math.floor(
+        1000 * Math.pow(1.28,level-5)
+    );
+}
+
+
+function addXP(amount){
+
+    amount = Math.floor(amount * game.eventXp);
+
+    game.xp += amount;
+
+    let safety = 0;
+
+    while(
+        game.xp >= xpNeeded(game.level) &&
+        safety < 100
+    ){
+
+        game.xp -= xpNeeded(game.level);
+        game.level++;
+
+        game.maxHp += 5;
+        game.hp = game.maxHp;
+
+        safety++;
+    }
+
+    save();
+    updateUI();
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function save(){
+
+    localStorage.setItem(
+        "undermineGame",
+        JSON.stringify(game)
+    );
+}
+
+
+/* =========================
+   UI
+========================= */
+
+function updateUI(){
+
+    document.getElementById("point").textContent =
+        game.point.toLocaleString();
+
+    document.getElementById("level").textContent =
+        game.level;
+
+    document.getElementById("kill").textContent =
+        game.kill;
+
+    document.getElementById("death").textContent =
+        game.death;
+
+    document.getElementById("energy").textContent =
+        game.energy;
+
+    document.getElementById("playerName").textContent =
+        game.playerName;
+
+    document.getElementById("stone").textContent =
+        game.stone;
+
+    document.getElementById("metal").textContent =
+        game.metal;
+
+    document.getElementById("crystal").textContent =
+        game.crystal;
+
+    document.getElementById("water").textContent =
+        game.water;
+
+    document.getElementById("medkit").textContent =
+        game.medkit;
+
+    document.getElementById("weapon").textContent =
+        game.weapon;
+
+    document.getElementById("armor").textContent =
+        game.armor;
+
+    document.getElementById("attack").textContent =
+        game.attack;
+
+    document.getElementById("defense").textContent =
+        game.defense;
+
+    document.getElementById("playerHp").textContent =
+        game.hp + " / " + game.maxHp;
+
+    document.getElementById("powerLevel").textContent =
+        game.powerLevel;
+
+    document.getElementById("labLevel").textContent =
+        game.labLevel;
+
+    let needed = xpNeeded(game.level);
+
+    let percent =
+        Math.min(100,(game.xp / needed)*100);
+
+    document.getElementById("xpbar").style.width =
+        percent + "%";
+
+    let hpPercent =
+        Math.max(0,(game.hp/game.maxHp)*100);
+
+    document.getElementById("playerHpBar").style.width =
+        hpPercent + "%";
+
+    renderZones();
+    renderEnemies();
+    renderQuests();
+    renderAchievements();
+
+    updateMineTimer();
+}
+
+
+/* =========================
+   NAVIGATION
+========================= */
+
+function showSection(id){
+
+    document.querySelectorAll("main section")
+        .forEach(s=>s.classList.remove("active"));
+
+    let target =
+        document.getElementById(id);
+
+    if(target){
+        target.classList.add("active");
+    }
+
+    if(id==="adminPanel" && !adminLogged){
+        showSection("adminLogin");
+    }
+}
+
+
+/* =========================
+   MINE
+========================= */
+
+function mine(){
+
+    let now = Date.now();
+
+    if(now < game.mineReadyAt){
+
+        showMineMessage(
+            "⏳ هنوز زمان استخراج بعدی نرسیده."
+        );
+
+        return;
+    }
+
+    if(game.energy < 10){
+
+        showMineMessage(
+            "⚡ انرژی کافی نداری."
+        );
+
+        return;
+    }
+
+    game.energy -= 10;
+
+    const rewards = [
+
+        {
+            name:"سنگ",
+            key:"stone",
+            amount:()=>Math.floor(Math.random()*5)+4,
+            xp:7,
+            point:4
+        },
+
+        {
+            name:"فلز",
+            key:"metal",
+            amount:()=>Math.floor(Math.random()*3)+2,
+            xp:10,
+            point:7
+        },
+
+        {
+            name:"کریستال",
+            key:"crystal",
+            amount:()=>1,
+            xp:18,
+            point:12,
+            chance:.08
+        },
+
+        {
+            name:"آب",
+            key:"water",
+            amount:()=>Math.floor(Math.random()*3)+2,
+            xp:7,
+            point:4
+        }
+
+    ];
+
+    let roll = Math.random();
+
+    let reward;
+
+    if(roll < .08){
+
+        reward = rewards[2];
+
+    }else{
+
+        reward =
+            rewards[
+                Math.floor(
+                    Math.random()*3
+                )
+            ];
+
+        if(reward.key==="crystal"){
+            reward=rewards[0];
+        }
+    }
+
+    let amount = reward.amount();
+
+    game[reward.key] += amount;
+
+    game.point +=
+        Math.floor(
+            reward.point * game.eventPoint
+        );
+
+    addXP(reward.xp);
+
+    /*
+      Mine cooldown:
+      Level 1 = 120 sec
+      هر Level حداکثر 5 ثانیه کاهش
+      کف نهایی = 90 ثانیه
+    */
+
+    let cooldown =
+        Math.max(
+            90,
+            game.mineCooldown -
+            ((game.mineLevel-1)*5)
+        );
+
+    game.mineReadyAt =
+        Date.now() + cooldown*1000;
+
+    completeQuest("mine",1);
+
+    unlockAchievements();
+
+    save();
+    updateUI();
+
+    showMineMessage(
+        `⛏ ${reward.name} +${amount} | ` +
+        `+${reward.xp} XP | ` +
+        `+${reward.point} Point`
+    );
+}
+
+
+function showMineMessage(text){
+
+    document.getElementById(
+        "mineMessage"
+    ).textContent = text;
+}
+
+
+function updateMineTimer(){
+
+    let btn =
+        document.getElementById("mineBtn");
+
+    let timer =
+        document.getElementById("mineTimer");
+
+    if(!btn || !timer) return;
+
+    let remaining =
+        Math.max(
+            0,
+            Math.ceil(
+                (game.mineReadyAt-Date.now())/1000
+            )
+        );
+
+    if(remaining > 0){
+
+        btn.disabled = true;
+
+        let min =
+            Math.floor(remaining/60);
+
+        let sec =
+            remaining%60;
+
+        timer.textContent =
+            `⏳ استخراج بعدی: ${min}:${String(sec).padStart(2,"0")}`;
+
+    }else{
+
+        btn.disabled = false;
+
+        timer.textContent =
+            "✅ معدن آماده است";
+    }
+}
+
+
+/* =========================
+   BUILDINGS
+========================= */
+
+function buildingCost(level){
+
+    return Math.floor(
+        100 * Math.pow(1.65,level-1)
+    );
+}
+
+
+function upgradeBuilding(type){
+
+    let level;
+
+    if(type==="mine")
+        level=game.mineLevel;
+
+    if(type==="power")
+        level=game.powerLevel;
+
+    if(type==="lab")
+        level=game.labLevel;
+
+    let cost =
+        buildingCost(level);
+
+    if(game.point < cost){
+
+        alert(
+            `برای ارتقا ${cost} Point لازم است.`
+        );
+
+        return;
+    }
+
+    game.point -= cost;
+
+    if(type==="mine"){
+
+        game.mineLevel++;
+
+        showMineMessage(
+            "⛏ معدن ارتقا پیدا کرد."
+        );
+
+    }
+
+    if(type==="power"){
+
+        game.powerLevel++;
+
+        game.maxEnergy += 5;
+
+        game.energy =
+            Math.min(
+                game.maxEnergy,
+                game.energy+5
+            );
+
+        document.getElementById(
+            "powerMessage"
+        ).textContent =
+            `نیروگاه به Level ${game.powerLevel} رسید.`;
+
+    }
+
+    if(type==="lab"){
+
+        game.labLevel++;
+
+        game.defense += 2;
+
+        document.getElementById(
+            "labMessage"
+        ).textContent =
+            `آزمایشگاه به Level ${game.labLevel} رسید.`;
+    }
+
+    save();
+    updateUI();
+}
+
+
+/* =========================
+   MAP
+========================= */
+
+const zones = [
+
+    {
+        id:1,
+        name:"تونل‌های متروکه",
+        level:1,
+        reward:"Stone / Metal"
+    },
+
+    {
+        id:2,
+        name:"غار کریستالی",
+        level:5,
+        reward:"Metal / Crystal"
+    },
+
+    {
+        id:3,
+        name:"شهر قدیمی",
+        level:10,
+        reward:"Crystal / Rare Items"
+    },
+
+    {
+        id:4,
+        name:"تونل‌های تاریک",
+        level:15,
+        reward:"Rare Resources"
+    },
+
+    {
+        id:5,
+        name:"قلمرو عمیق",
+        level:25,
+        reward:"Epic Resources"
+    },
+
+    {
+        id:6,
+        name:"The Abyss",
+        level:40,
+        reward:"Legendary"
+    }
+
+];
+
+
+function renderZones(){
+
+    let box =
+        document.getElementById("zones");
+
+    if(!box) return;
+
+    box.innerHTML="";
+
+    zones.forEach(z=>{
+
+        let unlocked =
+            game.level >= z.level ||
+            game.unlockedZones.includes(z.id);
+
+        box.innerHTML += `
+
+        <div class="card zone ${unlocked?"":"lock"}">
+
+            <span class="tag">
+                ${unlocked?"OPEN":"LOCKED"}
+            </span>
+
+            <h3>
+                ${z.name}
+            </h3>
+
+            <p class="muted">
+                Level مورد نیاز: ${z.level}
+            </p>
+
+            <p>
+                🎁 ${z.reward}
+            </p>
+
+            <button
+                class="btn"
+                ${unlocked?"":"disabled"}
+                onclick="enterZone(${z.id})"
+            >
+                ${unlocked?"ورود":"قفل"}
+            </button>
 
         </div>
 
-        <div class="building" onclick="showMessage('⚡ نیروگاه به‌زودی فعال می‌شود')">
+        `;
 
-          <div class="icon">⚡</div>
+    });
+}
 
-          <h3>نیروگاه</h3>
 
-          <p>
-            تولید انرژی
-          </p>
+function enterZone(id){
+
+    let z =
+        zones.find(x=>x.id===id);
+
+    if(!z) return;
+
+    if(game.level < z.level){
+
+        alert(
+            `برای ورود Level ${z.level} لازم است.`
+        );
+
+        return;
+    }
+
+    alert(
+        `وارد ${z.name} شدی.\n\n`+
+        `این منطقه در نسخه بعدی مأموریت‌ها و دشمن‌های اختصاصی خواهد داشت.`
+    );
+}
+
+
+/* =========================
+   BATTLE
+========================= */
+
+const enemies = [
+
+    {
+        id:1,
+        name:"Giant Rat",
+        hp:35,
+        attack:7,
+        defense:2,
+        xp:15,
+        point:10
+    },
+
+    {
+        id:2,
+        name:"Underground Spider",
+        hp:60,
+        attack:11,
+        defense:4,
+        xp:25,
+        point:18
+    },
+
+    {
+        id:3,
+        name:"Crystal Creature",
+        hp:100,
+        attack:17,
+        defense:7,
+        xp:45,
+        point:35
+    },
+
+    {
+        id:4,
+        name:"Depth Guardian",
+        hp:160,
+        attack:25,
+        defense:12,
+        xp:80,
+        point:65
+    }
+
+];
+
+
+function renderEnemies(){
+
+    let box =
+        document.getElementById("enemies");
+
+    if(!box) return;
+
+    box.innerHTML="";
+
+    enemies.forEach(e=>{
+
+        box.innerHTML += `
+
+        <div class="card enemy">
+
+            <span class="tag">
+                ENEMY
+            </span>
+
+            <h3>👹 ${e.name}</h3>
+
+            <p>❤️ HP: ${e.hp}</p>
+            <p>⚔ Attack: ${e.attack}</p>
+            <p>🛡 Defense: ${e.defense}</p>
+            <p class="muted">
+                XP: ${e.xp} | Point: ${e.point}
+            </p>
+
+            <button
+                class="btn"
+                onclick="fight(${e.id})"
+            >
+                حمله
+            </button>
 
         </div>
 
-        <div class="building" onclick="showMessage('🔬 آزمایشگاه هنوز ساخته نشده')">
+        `;
 
-          <div class="icon">🔬</div>
+    });
+}
 
-          <h3>آزمایشگاه</h3>
 
-          <p>
-            تحقیقات
-          </p>
+function fight(id){
+
+    let enemy =
+        enemies.find(x=>x.id===id);
+
+    if(!enemy) return;
+
+    if(game.energy < 15){
+
+        document.getElementById(
+            "battleMessage"
+        ).textContent =
+            "⚡ انرژی کافی نداری.";
+
+        return;
+    }
+
+    if(game.hp <= 0){
+
+        document.getElementById(
+            "battleMessage"
+        ).textContent =
+            "❤️ HP تو صفر است. از Medkit استفاده کن.";
+
+        return;
+    }
+
+    game.energy -= 15;
+
+    let playerDamage =
+        Math.max(
+            1,
+            game.attack - enemy.defense +
+            Math.floor(Math.random()*7)
+        );
+
+    let enemyDamage =
+        Math.max(
+            1,
+            enemy.attack - game.defense +
+            Math.floor(Math.random()*5)
+        );
+
+    let playerPower =
+        playerDamage + Math.random()*10;
+
+    let enemyPower =
+        enemyDamage + Math.random()*10;
+
+    if(playerPower >= enemyPower){
+
+        game.kill++;
+
+        game.point +=
+            Math.floor(
+                enemy.point * game.eventPoint
+            );
+
+        addXP(enemy.xp);
+
+        completeQuest("kill",1);
+
+        document.getElementById(
+            "battleMessage"
+        ).textContent =
+            `⚔ ${enemy.name} شکست خورد! `+
+            `+${enemy.point} Point | +${enemy.xp} XP`;
+
+    }else{
+
+        game.hp -= enemyDamage;
+
+        if(game.hp <= 0){
+
+            game.hp=0;
+            game.death++;
+
+            game.point =
+                Math.max(
+                    0,
+                    game.point-15
+                );
+
+            document.getElementById(
+                "battleMessage"
+            ).textContent =
+                `☠ شکست خوردی! Death +1`;
+
+        }else{
+
+            document.getElementById(
+                "battleMessage"
+            ).textContent =
+                `💥 ضربه خوردی! -${enemyDamage} HP`;
+        }
+    }
+
+    unlockAchievements();
+
+    save();
+    updateUI();
+}
+
+
+/* =========================
+   MEDKIT
+========================= */
+
+function useMedkit(){
+
+    if(game.medkit<=0){
+
+        alert("Medkit نداری.");
+        return;
+    }
+
+    if(game.hp>=game.maxHp){
+
+        alert("HP کامل است.");
+        return;
+    }
+
+    game.medkit--;
+
+    game.hp =
+        Math.min(
+            game.maxHp,
+            game.hp+50
+        );
+
+    save();
+    updateUI();
+}
+
+
+/* =========================
+   MARKET
+========================= */
+
+function buy(type){
+
+    const prices = {
+
+        stone:{
+            price:20,
+            amount:10
+        },
+
+        metal:{
+            price:30,
+            amount:5
+        },
+
+        crystal:{
+            price:50,
+            amount:1
+        },
+
+        water:{
+            price:15,
+            amount:5
+        },
+
+        medkit:{
+            price:40,
+            amount:1
+        }
+
+    };
+
+    let item =
+        prices[type];
+
+    if(!item) return;
+
+    if(game.point < item.price){
+
+        document.getElementById(
+            "marketMessage"
+        ).textContent =
+            "❌ Point کافی نیست.";
+
+        return;
+    }
+
+    game.point -= item.price;
+
+    game[type] += item.amount;
+
+    document.getElementById(
+        "marketMessage"
+    ).textContent =
+        `✅ خرید انجام شد: +${item.amount} ${type}`;
+
+    save();
+    updateUI();
+}
+
+
+/* =========================
+   QUESTS
+========================= */
+
+const quests = [
+
+    {
+        id:"mine",
+        name:"استخراج‌گر",
+        description:"10 بار Mine کن",
+        target:10,
+        rewardPoint:100,
+        rewardXp:80
+    },
+
+    {
+        id:"kill",
+        name:"شکارچی",
+        description:"5 دشمن را شکست بده",
+        target:5,
+        rewardPoint:150,
+        rewardXp:120
+    },
+
+    {
+        id:"level5",
+        name:"عمق‌نشین",
+        description:"به Level 5 برس",
+        target:5,
+        rewardPoint:250,
+        rewardXp:200
+    }
+
+];
+
+let questProgress={
+    mine:0,
+    kill:0
+};
+
+
+function completeQuest(id,amount){
+
+    questProgress[id] =
+        (questProgress[id]||0)+amount;
+
+}
+
+
+function renderQuests(){
+
+    let box =
+        document.getElementById("questList");
+
+    if(!box) return;
+
+    box.innerHTML="";
+
+    quests.forEach(q=>{
+
+        let progress=0;
+
+        if(q.id==="mine")
+            progress=questProgress.mine||0;
+
+        if(q.id==="kill")
+            progress=questProgress.kill||0;
+
+        if(q.id==="level5")
+            progress=game.level;
+
+        progress =
+            Math.min(
+                q.target,
+                progress
+            );
+
+        let done =
+            game.completedQuests.includes(q.id);
+
+        box.innerHTML += `
+
+        <div class="card">
+
+            <h3>${q.name}</h3>
+
+            <p>${q.description}</p>
+
+            <p class="muted">
+                ${progress} / ${q.target}
+            </p>
+
+            <p>
+                🎁 ${q.rewardPoint} Point
+                +
+                ${q.rewardXp} XP
+            </p>
+
+            <button
+                class="btn"
+                ${done || progress<q.target?"disabled":""}
+                onclick="claimQuest('${q.id}')"
+            >
+                ${done?"Completed":"دریافت جایزه"}
+            </button>
 
         </div>
 
-        <div class="building" onclick="showMessage('🏪 بازار به‌زودی فعال می‌شود')">
+        `;
 
-          <div class="icon">🏪</div>
+    });
+}
 
-          <h3>بازار</h3>
 
-          <p>
-            خرید و فروش
-          </p>
+function claimQuest(id){
+
+    let q =
+        quests.find(x=>x.id===id);
+
+    if(!q) return;
+
+    let progress=0;
+
+    if(id==="mine")
+        progress=questProgress.mine||0;
+
+    if(id==="kill")
+        progress=questProgress.kill||0;
+
+    if(id==="level5")
+        progress=game.level;
+
+    if(progress<q.target) return;
+
+    if(game.completedQuests.includes(id))
+        return;
+
+    game.completedQuests.push(id);
+
+    game.point += q.rewardPoint;
+
+    addXP(q.rewardXp);
+
+    save();
+    updateUI();
+}
+
+
+/* =========================
+   ACHIEVEMENTS
+========================= */
+
+const achievements=[
+
+    {
+        id:"firstMine",
+        name:"اولین استخراج",
+        condition:()=>(
+            (questProgress.mine||0)>=1
+        )
+    },
+
+    {
+        id:"firstKill",
+        name:"اولین خون",
+        condition:()=>game.kill>=1
+    },
+
+    {
+        id:"level10",
+        name:"عمق 10",
+        condition:()=>game.level>=10
+    },
+
+    {
+        id:"crystal10",
+        name:"Crystal Hunter",
+        condition:()=>game.crystal>=10
+    },
+
+    {
+        id:"level25",
+        name:"Deep Miner",
+        condition:()=>game.level>=25
+    }
+
+];
+
+
+function unlockAchievements(){
+
+    achievements.forEach(a=>{
+
+        if(
+            a.condition() &&
+            !game.achievements.includes(a.id)
+        ){
+
+            game.achievements.push(a.id);
+
+            game.point += 50;
+
+        }
+
+    });
+
+}
+
+
+function renderAchievements(){
+
+    let box =
+        document.getElementById(
+            "achievementList"
+        );
+
+    if(!box) return;
+
+    box.innerHTML="";
+
+    achievements.forEach(a=>{
+
+        let done =
+            game.achievements.includes(a.id);
+
+        box.innerHTML += `
+
+        <div class="card">
+
+            <h3>
+                ${done?"🏆":"🔒"} ${a.name}
+            </h3>
+
+            <p class="muted">
+                ${done?"Unlocked":"Locked"}
+            </p>
 
         </div>
 
-      </div>
+        `;
 
-    </section>
+    });
 
-    <section class="battle">
-
-      <h2>⚔️ منطقه خطرناک</h2>
-
-      <p id="message">
-        موجودات ناشناخته در اعماق زمین زندگی می‌کنند...
-      </p>
-
-      <button onclick="attack()">
-        ورود به مبارزه ⚔️
-      </button>
-
-    </section>
-
-  </main>
-
-  <script>
-
-    let playerName =
-      localStorage.getItem("playerName") || "";
-
-    let points =
-      Number(localStorage.getItem("points")) || 0;
-
-    let level =
-      Number(localStorage.getItem("level")) || 1;
-
-    let kills =
-      Number(localStorage.getItem("kills")) || 0;
-
-    let deaths =
-      Number(localStorage.getItem("deaths")) || 0;
-
-    let stone =
-      Number(localStorage.getItem("stone")) || 0;
-
-    let metal =
-      Number(localStorage.getItem("metal")) || 0;
-
-    let crystal =
-      Number(localStorage.getItem("crystal")) || 0;
-
-    let water =
-      Number(localStorage.getItem("water")) || 0;
+}
 
 
-    function saveGame() {
+/* =========================
+   ENERGY REGEN
+========================= */
 
-      localStorage.setItem("playerName", playerName);
-      localStorage.setItem("points", points);
-      localStorage.setItem("level", level);
-      localStorage.setItem("kills", kills);
-      localStorage.setItem("deaths", deaths);
+setInterval(()=>{
 
-      localStorage.setItem("stone", stone);
-      localStorage.setItem("metal", metal);
-      localStorage.setItem("crystal", crystal);
-      localStorage.setItem("water", water);
+    if(
+        game.energy <
+        game.maxEnergy
+    ){
 
+        game.energy++;
+
+        save();
+        updateUI();
     }
 
-
-    function updateScreen() {
-
-      document.getElementById("points").textContent =
-        points;
-
-      document.getElementById("level").textContent =
-        level;
-
-      document.getElementById("kills").textContent =
-        kills;
-
-      document.getElementById("deaths").textContent =
-        deaths;
-
-      document.getElementById("stone").textContent =
-        stone;
-
-      document.getElementById("metal").textContent =
-        metal;
-
-      document.getElementById("crystal").textContent =
-        crystal;
-
-      document.getElementById("water").textContent =
-        water;
-
-      document.getElementById("playerName").textContent =
-        playerName;
+},30000);
 
 
-      const levelStart =
-        (level - 1) * 100;
+/* =========================
+   ADMIN LOGIN
+========================= */
 
-      const levelEnd =
-        level * 100;
+function adminLogin(){
 
-      const progress =
-        points - levelStart;
+    const password =
+        document.getElementById(
+            "adminPassword"
+        ).value;
 
-      const required =
-        levelEnd - levelStart;
+    /*
+      Prototype password.
+      در نسخه واقعی نباید اینجا باشد.
+    */
 
-      document.getElementById("levelText").textContent =
-        progress + " / " + required;
+    if(password==="UNDERMINE_ADMIN"){
 
-      document.getElementById("levelProgress").style.width =
-        Math.min((progress / required) * 100, 100) + "%";
+        adminLogged=true;
+
+        document.getElementById(
+            "adminLoginMessage"
+        ).textContent =
+            "✅ ورود موفق.";
+
+        loadAdminFields();
+
+        setTimeout(()=>{
+            showSection("adminPanel");
+        },300);
+
+    }else{
+
+        document.getElementById(
+            "adminLoginMessage"
+        ).textContent =
+            "❌ رمز اشتباه است.";
 
     }
+}
 
 
-    function mineResource() {
+function loadAdminFields(){
 
-      const result =
-        Math.floor(Math.random() * 4);
+    document.getElementById(
+        "aPoint"
+    ).value=game.point;
 
-      if (result === 0) {
+    document.getElementById(
+        "aLevel"
+    ).value=game.level;
 
-        stone += 5;
+    document.getElementById(
+        "aXp"
+    ).value=game.xp;
 
-        document.getElementById("message").textContent =
-          "⛏️ پنج واحد سنگ استخراج کردی!";
+    document.getElementById(
+        "aKill"
+    ).value=game.kill;
 
-      }
+    document.getElementById(
+        "aDeath"
+    ).value=game.death;
 
-      else if (result === 1) {
+    document.getElementById(
+        "aHp"
+    ).value=game.hp;
 
-        metal += 3;
+    document.getElementById(
+        "aEnergy"
+    ).value=game.energy;
 
-        document.getElementById("message").textContent =
-          "⛓️ سه واحد فلز پیدا کردی!";
+    document.getElementById(
+        "mineCooldownAdmin"
+    ).value=game.mineCooldown;
+}
 
-      }
 
-      else if (result === 2) {
+/* =========================
+   ADMIN STATS
+========================= */
 
-        crystal += 1;
+function adminSaveStats(){
 
-        document.getElementById("message").textContent =
-          "💎 یک کریستال کمیاب پیدا کردی!";
+    if(!adminLogged) return;
 
-      }
+    game.point =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "aPoint"
+                ).value
+            )
+        );
 
-      else {
+    game.level =
+        Math.max(
+            1,
+            Number(
+                document.getElementById(
+                    "aLevel"
+                ).value
+            )
+        );
 
-        water += 2;
+    game.xp =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "aXp"
+                ).value
+            )
+        );
 
-        document.getElementById("message").textContent =
-          "💧 دو واحد آب زیرزمینی پیدا کردی!";
+    game.kill =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "aKill"
+                ).value
+            )
+        );
 
-      }
+    game.death =
+        Math.max(
+            0,
+            Number(
+                document.getElementById(
+                    "aDeath"
+                ).value
+            )
+        );
 
-      points += 5;
+    game.hp =
+        Math.min(
+            game.maxHp,
+            Math.max(
+                0,
+                Number(
+                    document.getElementById(
+                        "aHp"
+                    ).value
+                )
+            )
+        );
 
-      checkLevelUp();
+    game.energy =
+        Math.min(
+            game.maxEnergy,
+            Math.max(
+                0,
+                Number(
+                    document.getElementById(
+                        "aEnergy"
+                    ).value
+                )
+            )
+        );
 
-      saveGame();
+    save();
+    updateUI();
 
-      updateScreen();
+    document.getElementById(
+        "adminStatsMessage"
+    ).textContent =
+        "✅ اطلاعات بازیکن تغییر کرد.";
+}
 
+
+/* =========================
+   SPECIAL REWARD
+========================= */
+
+function giveSpecialReward(){
+
+    if(!adminLogged) return;
+
+    game.point += Number(
+        document.getElementById(
+            "rewardPoint"
+        ).value
+    ) || 0;
+
+    game.stone += Number(
+        document.getElementById(
+            "rewardStone"
+        ).value
+    ) || 0;
+
+    game.metal += Number(
+        document.getElementById(
+            "rewardMetal"
+        ).value
+    ) || 0;
+
+    game.crystal += Number(
+        document.getElementById(
+            "rewardCrystal"
+        ).value
+    ) || 0;
+
+    game.water += Number(
+        document.getElementById(
+            "rewardWater"
+        ).value
+    ) || 0;
+
+    game.medkit += Number(
+        document.getElementById(
+            "rewardMedkit"
+        ).value
+    ) || 0;
+
+    let xp =
+        Number(
+            document.getElementById(
+                "rewardXp"
+            ).value
+        ) || 0;
+
+    if(xp>0)
+        addXP(xp);
+
+    let item =
+        document.getElementById(
+            "specialItem"
+        ).value.trim();
+
+    if(item){
+        game.specialItems.push(item);
     }
 
+    save();
+    updateUI();
 
-    function attack() {
+    document.getElementById(
+        "rewardMessage"
+    ).textContent =
+        "🎁 جایزه ویژه با موفقیت اعمال شد.";
+}
 
-      const win =
-        Math.random() < 0.6;
 
-      if (win) {
+/* =========================
+   ADMIN EVENT
+========================= */
 
-        kills++;
+function activateEvent(){
 
-        points += 10;
+    game.eventXp =
+        Math.max(
+            1,
+            Number(
+                document.getElementById(
+                    "eventXp"
+                ).value
+            )
+        );
 
-        document.getElementById("message").textContent =
-          "⚔️ موجود زیرزمینی را شکست دادی! +10 Point";
+    game.eventPoint =
+        Math.max(
+            1,
+            Number(
+                document.getElementById(
+                    "eventPoint"
+                ).value
+            )
+        );
 
-        checkLevelUp();
+    save();
 
-      }
+    document.getElementById(
+        "eventMessage"
+    ).textContent =
+        `🎉 Event فعال شد — XP x${game.eventXp} | Point x${game.eventPoint}`;
 
-      else {
+}
 
-        deaths++;
 
-        document.getElementById("message").textContent =
-          "💀 موجود زیرزمینی تو را شکست داد!";
+function disableEvent(){
 
-      }
+    game.eventXp=1;
+    game.eventPoint=1;
 
-      saveGame();
+    save();
 
-      updateScreen();
+    document.getElementById(
+        "eventMessage"
+    ).textContent =
+        "Event خاموش شد.";
+}
+
+
+/* =========================
+   ADMIN MINE CONTROL
+========================= */
+
+function changeMineCooldown(){
+
+    let value =
+        Number(
+            document.getElementById(
+                "mineCooldownAdmin"
+            ).value
+        );
+
+    if(value < 30)
+        value=30;
+
+    game.mineCooldown=value;
+
+    save();
+
+    document.getElementById(
+        "mineAdminMessage"
+    ).textContent =
+        `⛏ زمان پایه Mine روی ${value} ثانیه قرار گرفت.`;
+
+    updateUI();
+}
+
+
+/* =========================
+   ADMIN ANNOUNCEMENT
+========================= */
+
+function sendAnnouncement(){
+
+    let msg =
+        document.getElementById(
+            "adminAnnouncement"
+        ).value.trim();
+
+    if(!msg) return;
+
+    game.announcement=msg;
+
+    save();
+
+    document.getElementById(
+        "announcementMessage"
+    ).textContent =
+        "📢 پیام ذخیره و منتشر شد.";
+
+    alert(
+        "📢 پیام ادمین:\n\n"+msg
+    );
+}
+
+
+/* =========================
+   ADMIN HEAL
+========================= */
+
+function adminFullHeal(){
+
+    if(!adminLogged) return;
+
+    game.hp=game.maxHp;
+
+    save();
+    updateUI();
+
+}
+
+
+function adminFullEnergy(){
+
+    if(!adminLogged) return;
+
+    game.energy=game.maxEnergy;
+
+    save();
+    updateUI();
+
+}
+
+
+/* =========================
+   RESET
+========================= */
+
+function resetGame(){
+
+    if(!adminLogged) return;
+
+    let ok =
+        confirm(
+            "تمام پیشرفت بازی پاک شود؟"
+        );
+
+    if(!ok) return;
+
+    localStorage.removeItem(
+        "undermineGame"
+    );
+
+    location.reload();
+}
+
+
+/* =========================
+   MEDKIT BUTTON
+========================= */
+
+document.addEventListener(
+    "click",
+    function(e){
+
+        if(
+            e.target &&
+            e.target.id==="useMedkit"
+        ){
+            useMedkit();
+        }
 
     }
+);
 
 
-    function checkLevelUp() {
+/* =========================
+   ADD MEDKIT BUTTON
+========================= */
 
-      while (points >= level * 100) {
+const inventoryCard =
+    document.querySelector(
+        "#inventory .card:nth-child(2)"
+    );
 
-        level++;
+if(inventoryCard){
 
-        document.getElementById("message").textContent +=
-          " 🎉 Level Up!";
+    inventoryCard.innerHTML += `
 
-      }
+        <button
+            class="btn"
+            id="useMedkit"
+        >
+            💊 استفاده از Medkit
+        </button>
 
-    }
+        <div class="message">
+            HP با هر Medkit تا 50 واحد افزایش می‌یابد.
+        </div>
 
-
-    function showMessage(message) {
-
-      document.getElementById("message").textContent =
-        message;
-
-    }
-
-
-    if (!playerName) {
-
-      playerName =
-        prompt("نام بازیکنت را وارد کن:");
-
-      if (!playerName) {
-
-        playerName = "بازیکن";
-
-      }
-
-      saveGame();
-
-    }
+    `;
+}
 
 
-    updateScreen();
+/* =========================
+   START
+========================= */
 
-  </script>
+setInterval(
+    updateMineTimer,
+    1000
+);
+
+unlockAchievements();
+updateUI();
+
+</script>
 
 </body>
 </html>
