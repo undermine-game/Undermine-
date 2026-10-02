@@ -60,6 +60,37 @@
       margin-top: 5px;
     }
 
+    .level-bar {
+      margin-top: 10px;
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px;
+    }
+
+    .level-info {
+      display: flex;
+      justify-content: space-between;
+      color: #aaa;
+      font-size: 13px;
+      margin-bottom: 7px;
+    }
+
+    .progress {
+      width: 100%;
+      height: 10px;
+      background: #292929;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    #levelProgress {
+      height: 100%;
+      width: 0%;
+      background: #fff;
+      transition: width 0.3s;
+    }
+
     .resources {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
@@ -225,6 +256,19 @@
 
     </div>
 
+    <div class="level-bar">
+
+      <div class="level-info">
+        <span>⭐ پیشرفت Level</span>
+        <span id="levelText">0 / 100</span>
+      </div>
+
+      <div class="progress">
+        <div id="levelProgress"></div>
+      </div>
+
+    </div>
+
     <div class="resources">
 
       <div class="resource">
@@ -251,7 +295,6 @@
 
   </header>
 
-
   <main class="city">
 
     <section class="welcome">
@@ -265,7 +308,6 @@
       </p>
 
     </section>
-
 
     <section class="mine">
 
@@ -287,7 +329,6 @@
 
         </div>
 
-
         <div class="building" onclick="showMessage('⚡ نیروگاه به‌زودی فعال می‌شود')">
 
           <div class="icon">⚡</div>
@@ -300,7 +341,6 @@
 
         </div>
 
-
         <div class="building" onclick="showMessage('🔬 آزمایشگاه هنوز ساخته نشده')">
 
           <div class="icon">🔬</div>
@@ -312,7 +352,6 @@
           </p>
 
         </div>
-
 
         <div class="building" onclick="showMessage('🏪 بازار به‌زودی فعال می‌شود')">
 
@@ -330,7 +369,6 @@
 
     </section>
 
-
     <section class="battle">
 
       <h2>⚔️ منطقه خطرناک</h2>
@@ -346,7 +384,6 @@
     </section>
 
   </main>
-
 
   <script>
 
@@ -423,6 +460,25 @@
       document.getElementById("playerName").textContent =
         playerName;
 
+
+      const levelStart =
+        (level - 1) * 100;
+
+      const levelEnd =
+        level * 100;
+
+      const progress =
+        points - levelStart;
+
+      const required =
+        levelEnd - levelStart;
+
+      document.getElementById("levelText").textContent =
+        progress + " / " + required;
+
+      document.getElementById("levelProgress").style.width =
+        Math.min((progress / required) * 100, 100) + "%";
+
     }
 
 
@@ -469,6 +525,8 @@
 
       points += 5;
 
+      checkLevelUp();
+
       saveGame();
 
       updateScreen();
@@ -490,14 +548,7 @@
         document.getElementById("message").textContent =
           "⚔️ موجود زیرزمینی را شکست دادی! +10 Point";
 
-        if (points >= level * 100) {
-
-          level++;
-
-          document.getElementById("message").textContent +=
-            " 🎉 Level Up!";
-
-        }
+        checkLevelUp();
 
       }
 
@@ -513,6 +564,20 @@
       saveGame();
 
       updateScreen();
+
+    }
+
+
+    function checkLevelUp() {
+
+      while (points >= level * 100) {
+
+        level++;
+
+        document.getElementById("message").textContent +=
+          " 🎉 Level Up!";
+
+      }
 
     }
 
