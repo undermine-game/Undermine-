@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Undermine</title>
 
   <style>
@@ -61,6 +60,29 @@
       margin-top: 5px;
     }
 
+    .resources {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .resource {
+      background: #181818;
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 10px 5px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    .resource span {
+      display: block;
+      font-size: 18px;
+      font-weight: bold;
+      margin-top: 4px;
+    }
+
     .city {
       padding: 20px;
       max-width: 900px;
@@ -80,17 +102,10 @@
     }
 
     .mine {
-      min-height: 430px;
-      background:
-        radial-gradient(circle at 20% 20%, #292929 0 4px, transparent 5px),
-        radial-gradient(circle at 80% 30%, #242424 0 5px, transparent 6px),
-        radial-gradient(circle at 40% 70%, #252525 0 6px, transparent 7px),
-        #101010;
+      background: #101010;
       border: 2px solid #292929;
       border-radius: 20px;
       padding: 20px;
-      position: relative;
-      overflow: hidden;
     }
 
     .mine-title {
@@ -164,7 +179,8 @@
     }
 
     @media (max-width: 600px) {
-      .stats {
+      .stats,
+      .resources {
         grid-template-columns: repeat(2, 1fr);
       }
 
@@ -209,6 +225,30 @@
 
     </div>
 
+    <div class="resources">
+
+      <div class="resource">
+        🪨 سنگ
+        <span id="stone">0</span>
+      </div>
+
+      <div class="resource">
+        ⛓️ فلز
+        <span id="metal">0</span>
+      </div>
+
+      <div class="resource">
+        💎 کریستال
+        <span id="crystal">0</span>
+      </div>
+
+      <div class="resource">
+        💧 آب
+        <span id="water">0</span>
+      </div>
+
+    </div>
+
   </header>
 
 
@@ -221,8 +261,7 @@
       </h2>
 
       <p>
-        به اعماق Undermine خوش آمدی.
-        اینجا شهری است که خودت باید آن را بسازی.
+        شهر زیرزمینی خودت را بساز، منابع جمع کن و به اعماق زمین برو.
       </p>
 
     </section>
@@ -233,7 +272,6 @@
       <div class="mine-title">
         🏙️ قلب شهر زیرزمینی
       </div>
-
 
       <div class="buildings">
 
@@ -250,7 +288,7 @@
         </div>
 
 
-        <div class="building" onclick="showMessage('ساختمان انرژی در حال آماده‌سازی است ⚡')">
+        <div class="building" onclick="showMessage('⚡ نیروگاه به‌زودی فعال می‌شود')">
 
           <div class="icon">⚡</div>
 
@@ -263,7 +301,7 @@
         </div>
 
 
-        <div class="building" onclick="showMessage('آزمایشگاه هنوز ساخته نشده 🔬')">
+        <div class="building" onclick="showMessage('🔬 آزمایشگاه هنوز ساخته نشده')">
 
           <div class="icon">🔬</div>
 
@@ -276,7 +314,7 @@
         </div>
 
 
-        <div class="building" onclick="showMessage('بازار به‌زودی فعال می‌شود 🏪')">
+        <div class="building" onclick="showMessage('🏪 بازار به‌زودی فعال می‌شود')">
 
           <div class="icon">🏪</div>
 
@@ -312,7 +350,8 @@
 
   <script>
 
-    let playerName = localStorage.getItem("playerName") || "";
+    let playerName =
+      localStorage.getItem("playerName") || "";
 
     let points =
       Number(localStorage.getItem("points")) || 0;
@@ -326,31 +365,60 @@
     let deaths =
       Number(localStorage.getItem("deaths")) || 0;
 
+    let stone =
+      Number(localStorage.getItem("stone")) || 0;
+
+    let metal =
+      Number(localStorage.getItem("metal")) || 0;
+
+    let crystal =
+      Number(localStorage.getItem("crystal")) || 0;
+
+    let water =
+      Number(localStorage.getItem("water")) || 0;
+
 
     function saveGame() {
 
       localStorage.setItem("playerName", playerName);
-
       localStorage.setItem("points", points);
-
       localStorage.setItem("level", level);
-
       localStorage.setItem("kills", kills);
-
       localStorage.setItem("deaths", deaths);
+
+      localStorage.setItem("stone", stone);
+      localStorage.setItem("metal", metal);
+      localStorage.setItem("crystal", crystal);
+      localStorage.setItem("water", water);
 
     }
 
 
     function updateScreen() {
 
-      document.getElementById("points").textContent = points;
+      document.getElementById("points").textContent =
+        points;
 
-      document.getElementById("level").textContent = level;
+      document.getElementById("level").textContent =
+        level;
 
-      document.getElementById("kills").textContent = kills;
+      document.getElementById("kills").textContent =
+        kills;
 
-      document.getElementById("deaths").textContent = deaths;
+      document.getElementById("deaths").textContent =
+        deaths;
+
+      document.getElementById("stone").textContent =
+        stone;
+
+      document.getElementById("metal").textContent =
+        metal;
+
+      document.getElementById("crystal").textContent =
+        crystal;
+
+      document.getElementById("water").textContent =
+        water;
 
       document.getElementById("playerName").textContent =
         playerName;
@@ -358,9 +426,60 @@
     }
 
 
+    function mineResource() {
+
+      const result =
+        Math.floor(Math.random() * 4);
+
+      if (result === 0) {
+
+        stone += 5;
+
+        document.getElementById("message").textContent =
+          "⛏️ پنج واحد سنگ استخراج کردی!";
+
+      }
+
+      else if (result === 1) {
+
+        metal += 3;
+
+        document.getElementById("message").textContent =
+          "⛓️ سه واحد فلز پیدا کردی!";
+
+      }
+
+      else if (result === 2) {
+
+        crystal += 1;
+
+        document.getElementById("message").textContent =
+          "💎 یک کریستال کمیاب پیدا کردی!";
+
+      }
+
+      else {
+
+        water += 2;
+
+        document.getElementById("message").textContent =
+          "💧 دو واحد آب زیرزمینی پیدا کردی!";
+
+      }
+
+      points += 5;
+
+      saveGame();
+
+      updateScreen();
+
+    }
+
+
     function attack() {
 
-      const win = Math.random() < 0.6;
+      const win =
+        Math.random() < 0.6;
 
       if (win) {
 
@@ -380,7 +499,9 @@
 
         }
 
-      } else {
+      }
+
+      else {
 
         deaths++;
 
@@ -388,20 +509,6 @@
           "💀 موجود زیرزمینی تو را شکست داد!";
 
       }
-
-      saveGame();
-
-      updateScreen();
-
-    }
-
-
-    function mineResource() {
-
-      points += 5;
-
-      document.getElementById("message").textContent =
-        "⛏️ منابع استخراج کردی! +5 Point";
 
       saveGame();
 
